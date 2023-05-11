@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package bus;
+
+import "google/protobuf/empty.proto";
+
+service BusService {
+  rpc ReceiveMessage(Message) returns (google.protobuf.Empty);
+}
+
+message Message {
+
+  string type = 1;
+
+  bytes data = 2;
+}
