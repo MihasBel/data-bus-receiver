@@ -33,4 +33,4 @@ stats: ## Code analytics
 	scc .
 
 proto:
-	@buf generate
+	./scripts/proto.sh

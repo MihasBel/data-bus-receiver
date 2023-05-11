@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package bus;
+package v1.bus;
+
+option go_package = "v1/bus";
 
 import "google/protobuf/empty.proto";
 
