@@ -3,7 +3,7 @@ module github.com/MihasBel/data-bus-receiver
 go 1.20
 
 require (
-	github.com/MihasBel/data-bus v0.0.0
+	github.com/MihasBel/data-bus v0.0.1
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/joho/godotenv v1.5.1
 	github.com/pkg/errors v0.9.1

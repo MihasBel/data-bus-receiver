@@ -14,7 +14,7 @@ services:
         condition: service_started
     environment:
       KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9093
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
   zookeeper:
     image: bitnami/zookeeper:3.8.0
     container_name: data-bus-zookeeper

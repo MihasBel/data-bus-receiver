@@ -9,9 +9,9 @@ COPY . ./
 RUN echo "build binary" && \
     export PATH=$PATH:/usr/local/go/bin && \
     go mod download && \
-    go build -tags musl /go/src/github.com/MihasBel/data-bus-bus/cmd/main.go && \
-    mkdir -p /data-bus-bus && \
-    mv main /data-bus-bus/main && \
+    go build -tags musl /go/src/github.com/MihasBel/data-bus-receiver/cmd/main.go && \
+    mkdir -p /data-bus-receiver && \
+    mv main /data-bus-receiver/main && \
     rm -Rf /usr/local/go/src
 
 FROM alpine:latest as app
