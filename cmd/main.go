@@ -42,7 +42,6 @@ func main() {
 	}
 
 	// create a logger instance
-	// TODO: log in file
 	logger := zerolog.New(os.Stderr).
 		Level(logLevel).
 		Output(zerolog.ConsoleWriter{Out: os.Stderr}).

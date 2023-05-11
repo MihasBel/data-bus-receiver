@@ -2,9 +2,16 @@ package app
 
 import (
 	"context"
+	grpcClient "github.com/MihasBel/data-bus-receiver/client/grpc/client"
+	"github.com/MihasBel/data-bus-receiver/delivery/kafka"
 	"github.com/MihasBel/data-bus-receiver/pkg/lifecycle"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+	"time"
+)
+
+const (
+	FmtCannotStart = "cannot start %q"
 )
 
 var (
@@ -36,11 +43,13 @@ func New(cfg Config, l zerolog.Logger) *App {
 func (a *App) Start(ctx context.Context) error {
 	a.log.Info().Msg("starting app")
 
+	b := kafka.New(a.cfg.KafkaConfig, a.cfg.MsgTypes, *a.log)
+	grpcCli := grpcClient.New(a.cfg.GRPCConfig, b, *a.log)
+
 	a.cmps = append(
 		a.cmps,
+		cmp{b, "receiver"},
 		cmp{grpcCli, "grpcClient"},
-		cmp{b, "broker"},
-		cmp{server, "server"},
 	)
 
 	okCh, errCh := make(chan struct{}), make(chan error)
@@ -71,3 +80,37 @@ func (a *App) Start(ctx context.Context) error {
 		return nil
 	}
 }
+func (a *App) Stop(ctx context.Context) error {
+	a.log.Info().Msg("shutting down service...")
+
+	okCh, errCh := make(chan struct{}), make(chan error)
+
+	go func() {
+		for i := len(a.cmps) - 1; i > 0; i-- {
+			c := a.cmps[i]
+			a.log.Info().Msgf("stopping %q...", c.Name)
+
+			if err := c.Service.Stop(ctx); err != nil {
+				a.log.Error().Err(err).Msgf("cannot stop %q", c.Name)
+				errCh <- err
+
+				return
+			}
+		}
+
+		okCh <- struct{}{}
+	}()
+
+	select {
+	case <-ctx.Done():
+		return ErrShutdownTimeout
+	case err := <-errCh:
+		return err
+	case <-okCh:
+		a.log.Info().Msg("Application stopped!")
+		return nil
+	}
+}
+
+func (a *App) GetStartTimeout() time.Duration { return a.cfg.StartTimeout }
+func (a *App) GetStopTimeout() time.Duration  { return a.cfg.StopTimeout }

@@ -43,7 +43,7 @@ func (c *busServiceClient) ReceiveMessage(ctx context.Context, in *Message, opts
 	return out, nil
 }
 
-// BusServiceServer is the server API for BusService service.
+// BusServiceServer is the client API for BusService service.
 // All implementations must embed UnimplementedBusServiceServer
 // for forward compatibility
 type BusServiceServer interface {
