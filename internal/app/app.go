@@ -2,12 +2,13 @@ package app
 
 import (
 	"context"
+	"time"
+
 	grpcClient "github.com/MihasBel/data-bus-receiver/client/grpc/client"
 	"github.com/MihasBel/data-bus-receiver/delivery/kafka"
 	"github.com/MihasBel/data-bus-receiver/pkg/lifecycle"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"time"
 )
 
 const (

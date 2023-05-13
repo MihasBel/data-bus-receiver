@@ -3,6 +3,9 @@ package client
 import (
 	"context"
 	"encoding/json"
+	"net"
+	"time"
+
 	"github.com/MihasBel/data-bus-receiver/client/grpc/client/bus"
 	v1bus "github.com/MihasBel/data-bus-receiver/client/grpc/gen/v1/bus"
 	"github.com/MihasBel/data-bus-receiver/internal/receiver"
@@ -13,8 +16,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
-	"net"
-	"time"
 )
 
 // MSGs

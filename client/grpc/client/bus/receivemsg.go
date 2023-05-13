@@ -2,6 +2,7 @@ package bus
 
 import (
 	"context"
+
 	"github.com/MihasBel/data-bus-receiver/client/grpc/gen/v1/bus"
 	"github.com/MihasBel/data-bus/broker/model"
 	"google.golang.org/grpc/codes"

@@ -2,6 +2,7 @@ package kafka
 
 import (
 	"context"
+
 	"github.com/MihasBel/data-bus/broker/model"
 	"github.com/pkg/errors"
 )
