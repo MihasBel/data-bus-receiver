@@ -1,20 +1,40 @@
-FROM golang:1.20.4-alpine as builder
+FROM golang:1.20.4 AS builder
 
-ENV CGO_ENABLED=1
+WORKDIR /app
 
-RUN apk update && apk add --no-cache make git build-base musl-dev librdkafka librdkafka-dev
-WORKDIR /go/src/github.com/MihasBel/data-bus-receiver
-COPY . ./
+RUN apt-get update && apt-get install -y \
+  build-essential \
+  git \
+  wget \
+  bash \
+  g++ \
+  make \
+  libssl-dev \
+  zlib1g-dev \
+  liblz4-dev \
+  libzstd-dev \
+  pkg-config
 
-RUN echo "build binary" && \
-    export PATH=$PATH:/usr/local/go/bin && \
-    go mod download && \
-    go build -tags musl /go/src/github.com/MihasBel/data-bus-receiver/cmd/main.go && \
-    mkdir -p /data-bus-receiver && \
-    mv main /data-bus-receiver/main && \
-    rm -Rf /usr/local/go/src
+RUN wget https://github.com/edenhill/librdkafka/archive/refs/tags/v1.9.0.tar.gz && \
+    tar xzf v1.9.0.tar.gz && \
+    cd librdkafka-1.9.0 && \
+    ./configure --prefix /usr && \
+    make && \
+    make install
 
-FROM alpine:latest as app
-WORKDIR /data-bus-receiver
-COPY --from=builder /data-bus-receiver/. /data-bus-receiver/
-CMD ./main
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+RUN CGO_ENABLED=1 GOOS=linux go build -a -tags dynamic -installsuffix cgo -o main ./cmd/main.go
+
+FROM golang:1.20.4
+
+COPY --from=builder /usr/lib/librdkafka.so* /usr/lib/
+COPY --from=builder /app/main .
+COPY --from=builder /app/.env .
+
+
+CMD ["./main"]
