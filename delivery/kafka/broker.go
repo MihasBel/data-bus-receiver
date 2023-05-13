@@ -132,7 +132,6 @@ func (b *Broker) produce(topic string, data []byte) error {
 }
 
 func (b *Broker) getCurrentTopics(types []string) (topics []string) {
-
 	for _, t := range types {
 		switch t {
 		case *bustopic.Info:

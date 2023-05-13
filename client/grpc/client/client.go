@@ -50,6 +50,7 @@ func New(
 	r receiver.Receiver,
 	l zerolog.Logger,
 ) *Server {
+
 	return &Server{
 		cfg: cfg,
 		r:   r,
@@ -107,7 +108,13 @@ func (s *Server) Stop(_ context.Context) error {
 }
 
 // ZerologInterceptor logger
-func (s *Server) ZerologInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+func (s *Server) ZerologInterceptor(
+	ctx context.Context,
+	req interface{},
+	info *grpc.UnaryServerInfo,
+	handler grpc.UnaryHandler,
+) (interface{}, error) {
+
 	start := time.Now()
 	resp, err := handler(ctx, req)
 	body, _ := json.Marshal(resp)
